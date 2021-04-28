@@ -9,8 +9,8 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui     import *
-from PyQt5.QtCore    import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import cv2
 import os
@@ -38,6 +38,7 @@ enc_model.load_weights(weights_path)
 
 mtcnn_detector = MTCNN()
 
+
 class Ui_Form():
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -59,13 +60,15 @@ class Ui_Form():
         self.recentRecognizeImage.setObjectName("recentRecognizeImage")
 
         self.recentCoverImageRecognize = QtWidgets.QGroupBox(Form)
-        self.recentCoverImageRecognize.setGeometry(QtCore.QRect(50, 200, 110, 150))
-        self.recentCoverImageRecognize.setObjectName("recentCoverImageRecognize")
+        self.recentCoverImageRecognize.setGeometry(
+            QtCore.QRect(50, 200, 110, 150))
+        self.recentCoverImageRecognize.setObjectName(
+            "recentCoverImageRecognize")
 
         # self.groupBox_3 = QtWidgets.QGroupBox(Form)
         # self.groupBox_3.setGeometry(QtCore.QRect(80, 370, 111, 91))
         # self.groupBox_3.setObjectName("groupBox_3")
-        
+
         self.label_2 = QtWidgets.QLabel(Form)
         self.label_2.setGeometry(QtCore.QRect(80, 140, 111, 81))
         self.label_2.setText("")
@@ -81,23 +84,22 @@ class Ui_Form():
         self.label_3.setIndent(-1)
         self.label_3.setObjectName("label_3")
 
-
-        color  = QtGui.QColor(233, 10, 150)
-        alpha  = 140
-        values = "{r}, {g}, {b}, {a}".format(r = color.red(),
-                                            g = color.green(),
-                                            b = color.blue(),
-                                            a = alpha
-                                            )
+        color = QtGui.QColor(233, 10, 150)
+        alpha = 140
+        values = "{r}, {g}, {b}, {a}".format(r=color.red(),
+                                             g=color.green(),
+                                             b=color.blue(),
+                                             a=alpha
+                                             )
         self.nameRecognize = QtWidgets.QLabel(Form)
-        self.nameRecognize.setGeometry(QtCore.QRect(300, 120, 0, 0 ))
+        self.nameRecognize.setGeometry(QtCore.QRect(300, 120, 0, 0))
         self.nameRecognize.setTextFormat(QtCore.Qt.AutoText)
         self.nameRecognize.setAlignment(QtCore.Qt.AlignCenter)
         self.nameRecognize.setObjectName("nameRecognize")
         self.nameRecognize.setText(" ")
-        self.nameRecognize.setAutoFillBackground(True) # This is important!!
-        self.nameRecognize.setStyleSheet("QLabel { background-color: rgba("+values+"); }")
-
+        self.nameRecognize.setAutoFillBackground(True)  # This is important!!
+        self.nameRecognize.setStyleSheet(
+            "QLabel { background-color: rgba("+values+"); }")
 
         self.detectFace = QtWidgets.QLabel(Form)
         self.detectFace.setGeometry(QtCore.QRect(300, 120, 0, 0))
@@ -111,17 +113,20 @@ class Ui_Form():
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.recentCoverImageRecognize.setTitle(_translate("Form", "Vu Tri Hau"))
+        self.recentCoverImageRecognize.setTitle(
+            _translate("Form", "Vu Tri Hau"))
         self.label_3.setText(_translate("Form", "Điểm danh khuôn mặt"))
 
     def openVideoCapture(self):
-        self.face_recognition(None, self.known_faces_encodings, self.known_faces_ids, threshold=0.75)
+        self.face_recognition(None, self.known_faces_encodings,
+                              self.known_faces_ids, threshold=0.75)
 
         def retranslateUi(self, MainWindow):
             _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.groupBox.setTitle(_translate("MainWindow", "Diem danh"))
-        self.recentCoverImageRecognize.setTitle(_translate("MainWindow", "Vu  Tri Hau"))
+        self.recentCoverImageRecognize.setTitle(
+            _translate("MainWindow", "Vu  Tri Hau"))
         self.pushButton.setText(_translate("MainWindow", "Show Camera"))
 
     # Function to detect and extract face from a image
@@ -202,8 +207,6 @@ class Ui_Form():
     known_faces_encodings = np.load('known_data/known_faces_encodings.npy')
     known_faces_ids = np.load('known_data/known_faces_ids.npy')
 
-
-
     print(known_faces_ids.shape[0])
 
     # Function to recognize a face (if it is in known_faces)
@@ -228,7 +231,7 @@ class Ui_Form():
 
             return (known_faces_ids[match], scores[match])
 
-    def face_recognition(self, file_path, known_faces_encodings, known_faces_ids,threshold):
+    def face_recognition(self, file_path, known_faces_encodings, known_faces_ids, threshold):
         """Function to perform real-time face recognition through a webcam
         :param file_path: 
         :param known_faces_encodings: list vector 128D (Chứa đặc trưng của các face của những người đã biết)
@@ -247,14 +250,15 @@ class Ui_Form():
             # Stop if end of video file
             if _ == False:
                 break
-            #Dùng mtcnn detect face
+            # Dùng mtcnn detect face
             results = mtcnn_detector.detect_faces(img)
 
             # Display
             # Hiển thị detect + camera
             height, width, channel = img.shape
             bytesPerLine = 3 * width
-            qImg = QtGui.QImage(img.data, width, height, bytesPerLine, QtGui.QImage.Format_RGB888).rgbSwapped()
+            imgCapture = QtGui.QImage(
+                img.data, width, height, bytesPerLine, QtGui.QImage.Format_RGB888).rgbSwapped()
 
             faces = []
 
@@ -266,9 +270,9 @@ class Ui_Form():
                     faces.append([x, y, w, h])
             # print(faces)
             if len(faces) > 0:
-                #Tìm khuôn mặt nào có kích thước lướn nhất để tiến hành nhận dạng
+                # Tìm khuôn mặt nào có kích thước lướn nhất để tiến hành nhận dạng
                 # Biến lưu trữ face có độ rộng lớn nhất -> dùng để nhận dạng
-                max_width_face =  np.argmax(faces,axis=0)[2]
+                max_width_face = np.argmax(faces, axis=0)[2]
                 # print(faces,max_width_face)
                 # ex = Widget();
                 # ex.show()
@@ -288,38 +292,40 @@ class Ui_Form():
 
                 # Recognize
                 label = self.recognize(face_array_normalized,
-                                        known_faces_encodings, known_faces_ids, threshold)
+                                       known_faces_encodings, known_faces_ids, threshold)
 
                 # Vẽ giao diện
                 # Trên pyqt5
                 # Khai Kháo painter -> vẽ ô vuông detect face
-                self.detectFace.setGeometry(QtCore.QRect(x + 300, y + 120, w,h))
-                #Hiển thị tên
+                self.detectFace.setGeometry(
+                    QtCore.QRect(x + 300, y + 120, w, h))
+                # Hiển thị tên
                 # self.nameRecognize.setGeometry(QtCore.QRect(x + 300 + w/2, y + 140, 100,30))
-                self.nameRecognize.setGeometry(QtCore.QRect(x + 300, y + 90, w,30))
+                self.nameRecognize.setGeometry(
+                    QtCore.QRect(x + 300, y + 90, w, 30))
                 self.nameRecognize.setText(str(label[0]))
 
-                #Hiển thị tên thanh điểm danh(Bên trái)
+                # Hiển thị tên thanh điểm danh(Bên trái)
                 # self.recentRecognizeImage.setTitle
-                self.recentRecognizeImage.setPixmap(QtGui.QPixmap(qImg))
+                # (x, y, w, h) = faces[max_width_face]
+                faceArray = img[y:y+h, x:x+w]
+                imgFace = Image.fromarray(faceArray)
+                # image = image.resize(required_size)
+                heightFace, widthFace, channelFace = faceArray.shape
+                bytesPerLineFace = 3 * widthFace
+                imgCapture = QtGui.QImage(imgFace, widthFace, heightFace, bytesPerLineFace, QtGui.QImage.Format_RGB888).rgbSwapped()
+                self.recentRecognizeImage.setPixmap(QtGui.QPixmap(imgCapture))
 
-
-            
             else:
                 # XÓA giao diện detect
                 # Trên pyqt5
-                self.detectFace.setGeometry(QtCore.QRect(0, 0, 0,0))
-                #Hiển thị tên
+                self.detectFace.setGeometry(QtCore.QRect(0, 0, 0, 0))
+                # Hiển thị tên
                 # self.nameRecognize.setGeometry(QtCore.QRect(x + 300 + w/2, y + 140, 100,30))
-                self.nameRecognize.setGeometry(QtCore.QRect(0,0,0,0))
+                self.nameRecognize.setGeometry(QtCore.QRect(0, 0, 0, 0))
                 # self.nameRecognize.setText("")
 
-
-            
-
-            self.videoCapture.setPixmap(QtGui.QPixmap(qImg))
-
-            
+            self.videoCapture.setPixmap(QtGui.QPixmap(imgCapture))
 
             # Stop if escape key is pressed
             key = cv2.waitKey(25) & 0xff
