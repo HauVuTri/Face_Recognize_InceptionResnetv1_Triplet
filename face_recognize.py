@@ -60,15 +60,6 @@ class Ui_Form():
         self.recentRecognizeImage.setText("")
         self.recentRecognizeImage.setObjectName("recentRecognizeImage")
 
-        self.recentCoverImageRecognize = QtWidgets.QGroupBox(Form)
-        self.recentCoverImageRecognize.setGeometry(
-            QtCore.QRect(60, 200, 130, 170))
-        self.recentCoverImageRecognize.setObjectName(
-            "recentCoverImageRecognize")
-
-        # self.groupBox_3 = QtWidgets.QGroupBox(Form)
-        # self.groupBox_3.setGeometry(QtCore.QRect(80, 370, 111, 91))
-        # self.groupBox_3.setObjectName("groupBox_3")
 
         self.label_2 = QtWidgets.QLabel(Form)
         self.label_2.setGeometry(QtCore.QRect(80, 140, 111, 81))
@@ -76,6 +67,7 @@ class Ui_Form():
         self.label_2.setScaledContents(True)
         self.label_2.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.label_2.setObjectName("label_2")
+
         self.label_3 = QtWidgets.QLabel(Form)
         self.label_3.setGeometry(QtCore.QRect(630, 60, 201, 51))
         self.label_3.setTextFormat(QtCore.Qt.AutoText)
@@ -84,6 +76,15 @@ class Ui_Form():
         self.label_3.setWordWrap(False)
         self.label_3.setIndent(-1)
         self.label_3.setObjectName("label_3")
+
+        self.nameEmployeeRecent = QtWidgets.QLabel(Form)
+        self.nameEmployeeRecent.setGeometry(QtCore.QRect(60, 380, 130, 30))
+        self.nameEmployeeRecent.setTextFormat(QtCore.Qt.AutoText)
+        self.nameEmployeeRecent.setScaledContents(False)
+        self.nameEmployeeRecent.setAlignment(QtCore.Qt.AlignCenter)
+        self.nameEmployeeRecent.setWordWrap(False)
+        self.nameEmployeeRecent.setIndent(-1)
+        self.nameEmployeeRecent.setObjectName("nameEmployeeRecent")
 
         color = QtGui.QColor(233, 10, 150)
         alpha = 140
@@ -114,8 +115,8 @@ class Ui_Form():
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.recentCoverImageRecognize.setTitle(
-            _translate("Form", "Vu Tri Hau"))
+        # self.recentCoverImageRecognize.setTitle(
+        #     _translate("Form", "Vu Tri Hau"))
         self.label_3.setText(_translate("Form", "Điểm danh khuôn mặt"))
 
     def openVideoCapture(self):
@@ -126,8 +127,8 @@ class Ui_Form():
             _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.groupBox.setTitle(_translate("MainWindow", "Diem danh"))
-        self.recentCoverImageRecognize.setTitle(
-            _translate("MainWindow", "Vu  Tri Hau"))
+        # self.recentCoverImageRecognize.setTitle(
+        #     _translate("MainWindow", "Vu  Tri Hau"))
 
     # Function to detect and extract face from a image
 
@@ -323,7 +324,9 @@ class Ui_Form():
                 
                 new_img = imgFaceCapture.scaled(130, 170)
                 self.recentRecognizeImage.setPixmap(QtGui.QPixmap(new_img))
-                self.recentCoverImageRecognize.setTitle(str(label[0]))
+
+                self.nameEmployeeRecent.setText(str(label[0]))
+                
                 # imgCapture = QtGui.QImage(img.data, width, height, bytesPerLine, QtGui.QImage.Format_RGB888).rgbSwapped()
                 
 
