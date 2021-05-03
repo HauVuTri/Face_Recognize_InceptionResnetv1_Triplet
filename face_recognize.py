@@ -20,6 +20,7 @@ from PIL import Image
 from numpy import asarray
 from mtcnn.mtcnn import MTCNN
 from keras.models import load_model, model_from_json
+import time
 
 
 # Load pretrained Inception-ResNet-v1 model
@@ -52,7 +53,7 @@ class Ui_Form():
         self.videoCapture.setObjectName("videoCapture")
 
         self.recentRecognizeImage = QtWidgets.QLabel(Form)
-        self.recentRecognizeImage.setGeometry(QtCore.QRect(50, 200, 110, 150))
+        self.recentRecognizeImage.setGeometry(QtCore.QRect(60, 200, 130, 170))
         self.recentRecognizeImage.setFrameShape(QtWidgets.QFrame.Box)
         self.recentRecognizeImage.setFrameShadow(QtWidgets.QFrame.Raised)
         self.recentRecognizeImage.setLineWidth(1)
@@ -61,7 +62,7 @@ class Ui_Form():
 
         self.recentCoverImageRecognize = QtWidgets.QGroupBox(Form)
         self.recentCoverImageRecognize.setGeometry(
-            QtCore.QRect(50, 200, 110, 150))
+            QtCore.QRect(60, 200, 130, 170))
         self.recentCoverImageRecognize.setObjectName(
             "recentCoverImageRecognize")
 
@@ -127,7 +128,6 @@ class Ui_Form():
         self.groupBox.setTitle(_translate("MainWindow", "Diem danh"))
         self.recentCoverImageRecognize.setTitle(
             _translate("MainWindow", "Vu  Tri Hau"))
-        self.pushButton.setText(_translate("MainWindow", "Show Camera"))
 
     # Function to detect and extract face from a image
 
@@ -308,13 +308,24 @@ class Ui_Form():
                 # Hiển thị tên thanh điểm danh(Bên trái)
                 # self.recentRecognizeImage.setTitle
                 # (x, y, w, h) = faces[max_width_face]
+                
                 faceArray = img[y:y+h, x:x+w]
-                imgFace = Image.fromarray(faceArray)
-                # image = image.resize(required_size)
+                # print(faceArray)
+                # print(type(faceArray))
+                # imgFace= cv2.cvtColor(faceArray, cv2.COLOR_BGR2BGRA)       
+                # cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img)
                 heightFace, widthFace, channelFace = faceArray.shape
+                # print(heightFace,widthFace)
                 bytesPerLineFace = 3 * widthFace
-                imgCapture = QtGui.QImage(imgFace, widthFace, heightFace, bytesPerLineFace, QtGui.QImage.Format_RGB888).rgbSwapped()
-                self.recentRecognizeImage.setPixmap(QtGui.QPixmap(imgCapture))
+                # imgFaceCapture = QtGui.QImage(faceArray.data, widthFace, heightFace, QtGui.QImage.Format_RGB888).rgbSwapped()
+                imgFaceCapture = QtGui.QImage(
+                faceArray.data.tobytes(), widthFace, heightFace, bytesPerLineFace, QtGui.QImage.Format_RGB888).rgbSwapped()
+                
+                new_img = imgFaceCapture.scaled(130, 170)
+                self.recentRecognizeImage.setPixmap(QtGui.QPixmap(new_img))
+                self.recentCoverImageRecognize.setTitle(str(label[0]))
+                # imgCapture = QtGui.QImage(img.data, width, height, bytesPerLine, QtGui.QImage.Format_RGB888).rgbSwapped()
+                
 
             else:
                 # XÓA giao diện detect
