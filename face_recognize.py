@@ -10,12 +10,10 @@ from PIL import Image
 from numpy import asarray
 from mtcnn.mtcnn import MTCNN
 from keras.models import load_model, model_from_json
-# import requestsRollCall from "./API"
 from API.requests_rollcall import CreateRollCall
 
 
 # Load pretrained Inception-ResNet-v1 model
-# Update model and weights path according to your working environment
 
 model_path = "Models/Inception_ResNet_v1.json"
 weights_path = "Models/facenet_keras_weights.h5"
@@ -116,7 +114,7 @@ class Ui_Form():
                               self.known_faces_ids, threshold=0.75)
 
 
-    # Function to detect and extract face from a image
+    # Hàm phát hiện mặt và trích xuất mặt từ ảnh đàu vào
 
     def detect_face(filename, required_size=(160, 160), normalize=True):
 
