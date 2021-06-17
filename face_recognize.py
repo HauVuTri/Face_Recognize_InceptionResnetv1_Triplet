@@ -12,12 +12,15 @@ from mtcnn.mtcnn import MTCNN
 from keras.models import load_model, model_from_json
 from API.requests_rollcall import CreateRollCall
 
+from Inception_RestnetV1 import InceptionResNetV1
+
 
 # Load pretrained Inception-ResNet-v1 model
 
 model_path = "Models/Inception_ResNet_v1.json"
-weights_path = "Models/facenet_keras_weights.h5"
-# weights_path = "enc1_model_weights.h5"
+weights_path = "Models/weights_train.h5"
+
+# weights_path = "enc_model_weights.h5"
 
 json_file = open(model_path, 'r')
 loaded_model_json = json_file.read()
@@ -26,11 +29,15 @@ print(loaded_model_json)
 enc_model = model_from_json(loaded_model_json)
 enc_model.load_weights(weights_path)
 
+#other load model 
+# enc_model = InceptionResNetV1()
+
 mtcnn_detector = MTCNN()
 
 
 class Ui_Form():
     lastLabel = ""
+    countToCreateRollCall = 0;
     def setupUi(self, Form):
         Form.setObjectName("Nhan Dien Khuon Mat")
         Form.resize(1100, 768)
@@ -218,7 +225,8 @@ class Ui_Form():
             return (known_faces_ids[match], scores[match])
 
     def face_recognition(self, file_path, known_faces_encodings, known_faces_ids, threshold):
-        """Function to perform real-time face recognition through a webcam
+        """
+        Hàm xử lý luồng nhận diện chính của chương trinh
         :param file_path: 
         :param known_faces_encodings: list vector 128D (Chứa đặc trưng của các face của những người đã biết)
         :param known_faces_ids: list nhãn của những người đã biết
@@ -259,7 +267,7 @@ class Ui_Form():
                 # Tìm khuôn mặt nào có kích thước lướn nhất để tiến hành nhận dạng
                 # Biến lưu trữ face có độ rộng lớn nhất -> dùng để nhận dạng
                 max_width_face = np.argmax(faces, axis=0)[2]
-                # print(faces,max_width_face)
+                # print(faces,max_width_face) 
                 # ex = Widget();
                 # ex.show()
                 # sys.exit(app.exec_())
@@ -282,6 +290,7 @@ class Ui_Form():
                 #Nếu nhận diện được người có trong list database có sẵn:
                 if(label[0] != "UNKNOWN"):
                     if(self.lastLabel != label[0]):
+                        self.countToCreateRollCall = 0;
                         self.lastLabel = label[0]
 
                         # Hiển thị mặt và tên ở thanh điểm danh(Bên trái)
@@ -297,8 +306,17 @@ class Ui_Form():
 
                         self.nameEmployeeRecent.setText(str(label[0]))
 
-                        #Gửi service thêm vào DB bằng điểm danh
-                        CreateRollCall(label[0])
+                        
+                    else:
+                        print(self.countToCreateRollCall)
+                        if(self.countToCreateRollCall == 20):
+                            #
+                            print("Da diem danh " + str(label[0]))
+                            #Gửi service thêm vào DB bằng điểm danh
+                            CreateRollCall(label[0])
+                            self.countToCreateRollCall = 0;
+                        else:
+                            self.countToCreateRollCall = self.countToCreateRollCall  + 1
 
                     
 
